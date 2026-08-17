@@ -11,6 +11,11 @@ export function useCalculator() {
   const [isEvaluated, setIsEvaluated] = useState<boolean>(false);
   const hiddenDigits = useRef<string>('');
   const lastShakeAt = useRef<number>(0);
+  const expressionRef = useRef<string>('');
+  const isEvaluatedRef = useRef<boolean>(false);
+
+  expressionRef.current = expression;
+  isEvaluatedRef.current = isEvaluated;
 
   useEffect(() => {
     if (!expression || isEvaluated) {
@@ -121,9 +126,16 @@ export function useCalculator() {
   };
 
   const swipeDelete = () => {
-    if (isEvaluated || !expression || !SIMPLE_NUMBER.test(expression)) return;
-    if (!hiddenDigits.current) hiddenDigits.current = expression;
-    setExpression(expression.slice(0, -1));
+    const currentExpression = expressionRef.current;
+    if (
+      isEvaluatedRef.current ||
+      !currentExpression ||
+      !SIMPLE_NUMBER.test(currentExpression)
+    ) {
+      return;
+    }
+    if (!hiddenDigits.current) hiddenDigits.current = currentExpression;
+    setExpression(currentExpression.slice(0, -1));
   };
 
   return { expression, resultPreview, handlePress, swipeDelete };

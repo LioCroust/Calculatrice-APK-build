@@ -21,12 +21,19 @@ export default function CalculatorScreen() {
 
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => false,
+      onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 20 && Math.abs(gestureState.dy) < 30;
+        return (
+          Math.abs(gestureState.dx) > 12 &&
+          Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 1.2
+        );
       },
+      onPanResponderTerminationRequest: () => false,
       onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx > 50) {
+        if (
+          gestureState.dx > 28 &&
+          Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 1.2
+        ) {
           swipeDelete();
           if (Platform.OS !== 'web') {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
