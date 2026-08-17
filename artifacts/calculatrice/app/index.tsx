@@ -1,5 +1,16 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, PanResponder, Platform, useWindowDimensions } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  PanResponder,
+  Platform,
+  Modal,
+  ScrollView,
+  useWindowDimensions,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useCalculator, formatExpression } from '../hooks/useCalculator';
@@ -13,12 +24,30 @@ const BUTTONS = [
   ['0', ',', '⌫', '=']
 ];
 
+const ROUTINE_STEPS = [
+  'Le magicien effectue un calcul ou tape un nombre (par exemple le résultat d’un choix du public ou une prédiction).',
+  'Au moment de retirer le tout premier chiffre, le magicien demande au spectateur de tendre la main et de fermer fermement le poing.',
+  'En effectuant un glissement discret (swipe) vers la droite directement sur l’écran d’affichage, le dernier chiffre disparaît de la calculatrice.',
+  'Le magicien fait semblant de tenir ce chiffre invisible entre le pouce et l’index, puis mime le geste de le lancer dans la main fermée du spectateur.',
+  'L’opération est répétée pour chaque chiffre : à chaque swipe vers la droite, un chiffre disparaît et est symboliquement projeté dans le poing du spectateur.',
+  'Lorsque le dernier chiffre s’efface, l’écran devient totalement vide (aucun zéro ne subsiste).',
+  'Le magicien tient la calculatrice orientée vers le spectateur. Il lui demande d’ouvrir la main et de faire semblant de rejeter tous les chiffres invisibles d’un coup vers le téléphone.',
+  'Au moment exact où le spectateur mime le lancer, une infime secousse naturelle du téléphone fait réapparaître instantanément tous les chiffres à leur position exacte. Effet magique garanti !',
+];
+
 export default function CalculatorScreen() {
-  const { expression, resultPreview, handlePress, swipeDelete } = useCalculator();
+  const { expression, resultPreview, isEvaluated, handlePress, swipeDelete } = useCalculator();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const [swipeOffset, setSwipeOffset] = useState<number>(0);
+  const [showRoutine, setShowRoutine] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (expression === '1234' && !isEvaluated) {
+      setShowRoutine(true);
+    }
+  }, [expression, isEvaluated]);
 
   const settleDisplay = () => {
     setSwipeOffset(0);
@@ -149,6 +178,77 @@ export default function CalculatorScreen() {
           </View>
         ))}
       </View>
+
+      <Modal
+        visible={showRoutine}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setShowRoutine(false)}
+      >
+        <View style={styles.modalRoot}>
+          <View
+            pointerEvents="none"
+            style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.background, opacity: 0.9 }]}
+          />
+          <View
+            style={[
+              styles.routineCard,
+              {
+                backgroundColor: colors.card,
+                borderColor: colors.border,
+                borderRadius: colors.radius * 3,
+              },
+            ]}
+            testID="routine-modal"
+          >
+            <View style={styles.routineHeader}>
+              <View style={styles.routineTitleGroup}>
+                <View style={[styles.routineBadge, { backgroundColor: colors.primary }]}>
+                  <Text style={[styles.routineBadgeText, { color: colors.primaryForeground }]}>?</Text>
+                </View>
+                <View style={styles.routineTitleText}>
+                  <Text style={[styles.routineEyebrow, { color: colors.primary }]}>ROUTINE</Text>
+                  <Text style={[styles.routineTitle, { color: colors.foreground }]}>
+                    LE DÉROULÉ DE L’EFFET
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            <ScrollView
+              style={styles.routineScroll}
+              contentContainerStyle={styles.routineContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {ROUTINE_STEPS.map((step, index) => (
+                <View key={step} style={styles.routineStep}>
+                  <View style={[styles.stepNumber, { backgroundColor: colors.muted }]}>
+                    <Text style={[styles.stepNumberText, { color: colors.primary }]}>{index + 1}</Text>
+                  </View>
+                  <Text style={[styles.stepText, { color: colors.cardForeground }]}>{step}</Text>
+                </View>
+              ))}
+            </ScrollView>
+
+            <View style={[styles.routineFooter, { borderTopColor: colors.border }]}>
+              <Pressable
+                onPress={() => setShowRoutine(false)}
+                style={({ pressed }) => [
+                  styles.closeButton,
+                  pressed && { opacity: 0.7 },
+                ]}
+                android_ripple={{ color: colors.muted }}
+                testID="routine-close"
+                accessibilityRole="button"
+                accessibilityLabel="Fermer la routine"
+              >
+                <Text style={[styles.closeButtonText, { color: colors.primary }]}>FERMER</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -196,5 +296,104 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: 'Inter_400Regular',
+  },
+  modalRoot: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+  },
+  routineCard: {
+    width: '100%',
+    maxWidth: 480,
+    maxHeight: '92%',
+    alignSelf: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    elevation: 8,
+    overflow: 'hidden',
+  },
+  routineHeader: {
+    paddingHorizontal: 20,
+    paddingTop: 22,
+    paddingBottom: 16,
+  },
+  routineTitleGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  routineBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  routineBadgeText: {
+    fontSize: 22,
+    fontFamily: 'Inter_500Medium',
+  },
+  routineTitleText: {
+    flex: 1,
+  },
+  routineEyebrow: {
+    fontSize: 12,
+    letterSpacing: 1.2,
+    fontFamily: 'Inter_600SemiBold',
+    marginBottom: 4,
+  },
+  routineTitle: {
+    fontSize: 18,
+    lineHeight: 24,
+    fontFamily: 'Inter_600SemiBold',
+  },
+  routineScroll: {
+    flexShrink: 1,
+  },
+  routineContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 8,
+  },
+  routineStep: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 18,
+  },
+  stepNumber: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+    marginTop: 1,
+  },
+  stepNumberText: {
+    fontSize: 14,
+    fontFamily: 'Inter_600SemiBold',
+  },
+  stepText: {
+    flex: 1,
+    fontSize: 15,
+    lineHeight: 22,
+    fontFamily: 'Inter_400Regular',
+  },
+  routineFooter: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    alignItems: 'flex-end',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  closeButton: {
+    minHeight: 48,
+    minWidth: 96,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  closeButtonText: {
+    fontSize: 14,
+    letterSpacing: 0.8,
+    fontFamily: 'Inter_600SemiBold',
   },
 });

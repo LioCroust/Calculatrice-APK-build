@@ -155,7 +155,7 @@ export function useCalculator() {
     setIsEvaluated(false);
   };
 
-  return { expression, resultPreview, handlePress, swipeDelete };
+  return { expression, resultPreview, isEvaluated, handlePress, swipeDelete };
 }
 
 export function formatExpression(expression: string) {
