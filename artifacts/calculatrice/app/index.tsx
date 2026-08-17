@@ -94,6 +94,11 @@ export default function CalculatorScreen() {
     handlePress(btn);
   };
 
+  const closeRoutine = () => {
+    handlePress('AC');
+    setShowRoutine(false);
+  };
+
   const effectiveWidth = Math.min(width, 480);
   const buttonMargin = 6;
   const maxButtonWidth = (effectiveWidth - 32 - buttonMargin * 8) / 4;
@@ -184,7 +189,7 @@ export default function CalculatorScreen() {
         transparent
         animationType="fade"
         statusBarTranslucent
-        onRequestClose={() => setShowRoutine(false)}
+        onRequestClose={closeRoutine}
       >
         <View style={styles.modalRoot}>
           <View
@@ -229,11 +234,16 @@ export default function CalculatorScreen() {
                   <Text style={[styles.stepText, { color: colors.cardForeground }]}>{step}</Text>
                 </View>
               ))}
+              <View style={[styles.routineNote, { backgroundColor: colors.muted }]}>
+                <Text style={[styles.routineNoteText, { color: colors.mutedForeground }]}>
+                  AC remet à zéro le nombre mémorisé pour sa réapparition après la légère secousse.
+                </Text>
+              </View>
             </ScrollView>
 
             <View style={[styles.routineFooter, { borderTopColor: colors.border }]}>
               <Pressable
-                onPress={() => setShowRoutine(false)}
+                onPress={closeRoutine}
                 style={({ pressed }) => [
                   styles.closeButton,
                   pressed && { opacity: 0.7 },
@@ -241,9 +251,9 @@ export default function CalculatorScreen() {
                 android_ripple={{ color: colors.muted }}
                 testID="routine-close"
                 accessibilityRole="button"
-                accessibilityLabel="Fermer la routine"
+                accessibilityLabel="Retour et remise à zéro"
               >
-                <Text style={[styles.closeButtonText, { color: colors.primary }]}>FERMER</Text>
+                <Text style={[styles.closeButtonText, { color: colors.primary }]}>RETOUR</Text>
               </Pressable>
             </View>
           </View>
@@ -376,6 +386,18 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     lineHeight: 22,
+    fontFamily: 'Inter_400Regular',
+  },
+  routineNote: {
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginTop: 2,
+    marginBottom: 10,
+  },
+  routineNoteText: {
+    fontSize: 13,
+    lineHeight: 19,
     fontFamily: 'Inter_400Regular',
   },
   routineFooter: {
