@@ -12,11 +12,9 @@ export function useCalculator() {
   const hiddenDigits = useRef<string>('');
   const lastShakeAt = useRef<number>(0);
   const expressionRef = useRef<string>('');
-  const isEvaluatedRef = useRef<boolean>(false);
-  const previousForce = useRef<number>(1);
+  const previousAcceleration = useRef<{ x: number; y: number; z: number } | null>(null);
 
   expressionRef.current = expression;
-  isEvaluatedRef.current = isEvaluated;
 
   useEffect(() => {
     if (!expression || isEvaluated) {
@@ -37,14 +35,21 @@ export function useCalculator() {
 
     let subscription: ReturnType<typeof Accelerometer.addListener> | undefined;
     try {
-      Accelerometer.setUpdateInterval(100);
+      Accelerometer.setUpdateInterval(60);
       subscription = Accelerometer.addListener(({ x, y, z }) => {
         const force = Math.sqrt(x * x + y * y + z * z);
-        const forceDelta = Math.abs(force - previousForce.current);
-        previousForce.current = force;
+        const previous = previousAcceleration.current;
+        previousAcceleration.current = { x, y, z };
+        if (!previous) return;
+
+        const accelerationDelta = Math.sqrt(
+          (x - previous.x) ** 2 +
+          (y - previous.y) ** 2 +
+          (z - previous.z) ** 2,
+        );
         const now = Date.now();
-        const isShake = force > 2.15 || (force > 1.65 && forceDelta > 0.85);
-        if (isShake && now - lastShakeAt.current > 800) {
+        const isShake = accelerationDelta > 0.42 || force > 1.75;
+        if (isShake && now - lastShakeAt.current > 600) {
           lastShakeAt.current = now;
           if (expressionRef.current === '' && hiddenDigits.current !== '') {
             setExpression(hiddenDigits.current);
@@ -131,15 +136,12 @@ export function useCalculator() {
 
   const swipeDelete = () => {
     const currentExpression = expressionRef.current;
-    if (
-      isEvaluatedRef.current ||
-      !currentExpression ||
-      !SIMPLE_NUMBER.test(currentExpression)
-    ) {
+    if (!currentExpression || !SIMPLE_NUMBER.test(currentExpression)) {
       return;
     }
     if (!hiddenDigits.current) hiddenDigits.current = currentExpression;
     setExpression(currentExpression.slice(0, -1));
+    setIsEvaluated(false);
   };
 
   return { expression, resultPreview, handlePress, swipeDelete };
