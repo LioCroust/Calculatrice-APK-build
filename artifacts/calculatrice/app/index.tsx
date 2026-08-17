@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, PanResponder, Platform, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, PanResponder, Platform, useWindowDimensions, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useCalculator, formatExpression } from '../hooks/useCalculator';
@@ -18,6 +18,16 @@ export default function CalculatorScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const swipeOffset = useRef(new Animated.Value(0)).current;
+
+  const settleDisplay = () => {
+    Animated.spring(swipeOffset, {
+      toValue: 0,
+      tension: 80,
+      friction: 10,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const panResponder = useRef(
     PanResponder.create({
@@ -29,6 +39,13 @@ export default function CalculatorScreen() {
         );
       },
       onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: () => {
+        swipeOffset.stopAnimation();
+        swipeOffset.setValue(0);
+      },
+      onPanResponderMove: (_, gestureState) => {
+        swipeOffset.setValue(Math.max(0, Math.min(gestureState.dx, 96)));
+      },
       onPanResponderRelease: (_, gestureState) => {
         if (
           gestureState.dx > 28 &&
@@ -39,6 +56,10 @@ export default function CalculatorScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           }
         }
+        settleDisplay();
+      },
+      onPanResponderTerminate: () => {
+        settleDisplay();
       }
     })
   ).current;
@@ -58,7 +79,7 @@ export default function CalculatorScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom || 16 }]}>
       <View
-        style={styles.displayContainer}
+        style={[styles.displayContainer, { transform: [{ translateX: swipeOffset }] }]}
         {...panResponder.panHandlers}
         testID="display-area"
       >

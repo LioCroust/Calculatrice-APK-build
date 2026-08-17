@@ -13,6 +13,7 @@ export function useCalculator() {
   const lastShakeAt = useRef<number>(0);
   const expressionRef = useRef<string>('');
   const isEvaluatedRef = useRef<boolean>(false);
+  const previousForce = useRef<number>(1);
 
   expressionRef.current = expression;
   isEvaluatedRef.current = isEvaluated;
@@ -36,13 +37,16 @@ export function useCalculator() {
 
     let subscription: ReturnType<typeof Accelerometer.addListener> | undefined;
     try {
-      Accelerometer.setUpdateInterval(350);
+      Accelerometer.setUpdateInterval(100);
       subscription = Accelerometer.addListener(({ x, y, z }) => {
         const force = Math.sqrt(x * x + y * y + z * z);
+        const forceDelta = Math.abs(force - previousForce.current);
+        previousForce.current = force;
         const now = Date.now();
-        if (force > 2.35 && now - lastShakeAt.current > 800) {
+        const isShake = force > 2.15 || (force > 1.65 && forceDelta > 0.85);
+        if (isShake && now - lastShakeAt.current > 800) {
           lastShakeAt.current = now;
-          if (expression === '' && hiddenDigits.current !== '') {
+          if (expressionRef.current === '' && hiddenDigits.current !== '') {
             setExpression(hiddenDigits.current);
             hiddenDigits.current = '';
             setIsEvaluated(false);
@@ -54,7 +58,7 @@ export function useCalculator() {
     }
 
     return () => subscription?.remove();
-  }, [expression]);
+  }, []);
 
   const handlePress = (button: string) => {
     if (button === 'AC') {
