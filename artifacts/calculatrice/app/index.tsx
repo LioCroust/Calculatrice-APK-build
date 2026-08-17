@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, PanResponder, Platform, useWindowDimensions, Animated } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, PanResponder, Platform, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useCalculator, formatExpression } from '../hooks/useCalculator';
@@ -18,15 +18,10 @@ export default function CalculatorScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const swipeOffset = useRef(new Animated.Value(0)).current;
+  const [swipeOffset, setSwipeOffset] = useState<number>(0);
 
   const settleDisplay = () => {
-    Animated.spring(swipeOffset, {
-      toValue: 0,
-      tension: 80,
-      friction: 10,
-      useNativeDriver: true,
-    }).start();
+    setSwipeOffset(0);
   };
 
   const panResponder = useRef(
@@ -40,11 +35,10 @@ export default function CalculatorScreen() {
       },
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: () => {
-        swipeOffset.stopAnimation();
-        swipeOffset.setValue(0);
+        setSwipeOffset(0);
       },
       onPanResponderMove: (_, gestureState) => {
-        swipeOffset.setValue(Math.max(0, Math.min(gestureState.dx, 96)));
+        setSwipeOffset(Math.max(0, Math.min(gestureState.dx, 96)));
       },
       onPanResponderRelease: (_, gestureState) => {
         if (
@@ -79,7 +73,10 @@ export default function CalculatorScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom || 16 }]}>
       <View
-        style={[styles.displayContainer, { transform: [{ translateX: swipeOffset }] }]}
+        style={[
+          styles.displayContainer,
+          swipeOffset > 0 ? { transform: [{ translateX: swipeOffset }] } : undefined,
+        ]}
         {...panResponder.panHandlers}
         testID="display-area"
       >
