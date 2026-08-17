@@ -4,6 +4,7 @@ import { Accelerometer } from 'expo-sensors';
 
 const OPERATORS = ['+', '-', '×', '÷'];
 const SIMPLE_NUMBER = /^-?\d*(,\d*)?$/;
+const SHAKE_RESTORE_DELAY_MS = 1000;
 
 export function useCalculator() {
   const [expression, setExpression] = useState<string>('');
@@ -11,6 +12,7 @@ export function useCalculator() {
   const [isEvaluated, setIsEvaluated] = useState<boolean>(false);
   const hiddenDigits = useRef<string>('');
   const lastShakeAt = useRef<number>(0);
+  const emptySince = useRef<number | null>(null);
   const expressionRef = useRef<string>('');
   const previousAcceleration = useRef<{ x: number; y: number; z: number } | null>(null);
 
@@ -49,11 +51,15 @@ export function useCalculator() {
         );
         const now = Date.now();
         const isShake = accelerationDelta > 0.42 || force > 1.75;
-        if (isShake && now - lastShakeAt.current > 600) {
+        const canRestoreAfterDelay =
+          emptySince.current !== null &&
+          now - emptySince.current >= SHAKE_RESTORE_DELAY_MS;
+        if (isShake && canRestoreAfterDelay && now - lastShakeAt.current > 600) {
           lastShakeAt.current = now;
           if (expressionRef.current === '' && hiddenDigits.current !== '') {
             setExpression(hiddenDigits.current);
             hiddenDigits.current = '';
+            emptySince.current = null;
             setIsEvaluated(false);
           }
         }
@@ -68,6 +74,7 @@ export function useCalculator() {
   const handlePress = (button: string) => {
     if (button === 'AC') {
       hiddenDigits.current = '';
+      emptySince.current = null;
       setExpression('');
       setResultPreview('');
       setIsEvaluated(false);
@@ -140,7 +147,11 @@ export function useCalculator() {
       return;
     }
     if (!hiddenDigits.current) hiddenDigits.current = currentExpression;
-    setExpression(currentExpression.slice(0, -1));
+    const nextExpression = currentExpression.slice(0, -1);
+    if (!nextExpression) {
+      emptySince.current = Date.now();
+    }
+    setExpression(nextExpression);
     setIsEvaluated(false);
   };
 
