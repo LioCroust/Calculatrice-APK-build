@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Calculatrice",
+    "slug": "calculatrice",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/calculator-icon.png",
+    "scheme": "calculatrice",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/calculator-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#202124"
+    },
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {},
+    "web": {
+      "favicon": "./assets/images/calculator-icon.png"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://replit.com/"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

@@ -1,0 +1,289 @@
+Tu es un développeur senior React Native / Expo spécialisé en interfaces Android natives.
+
+Crée une application mobile Android complète avec Expo et React Native appelée “Calculatrice”.
+
+OBJECTIF PRINCIPAL
+Créer une calculatrice totalement fonctionnelle qui ressemble au maximum à la calculatrice Google Android stock visible sur un smartphone Android récent, en mode sombre.
+
+L’application doit fonctionner :
+- dans Expo Go pour les tests ;
+- dans un APK Android autonome généré avec EAS Build ;
+- sans écran Web intermédiaire ;
+- sans serveur backend ;
+- hors ligne pour toutes les fonctions de calcul.
+
+IMPORTANT
+Ne crée pas une simple maquette.
+Je veux une vraie calculatrice utilisable normalement, avec une fonctionnalité cachée supplémentaire.
+
+TECHNOLOGIE OBLIGATOIRE
+- Expo React Native.
+- TypeScript ou JavaScript, mais le projet doit être cohérent.
+- Utiliser React Native natif.
+- Utiliser react-native-gesture-handler ou PanResponder pour le swipe.
+- Utiliser expo-sensors pour détecter les secousses du téléphone.
+- Ne pas utiliser de navigateur intégré.
+- Ne pas utiliser de HTML pour l’interface principale.
+- Ne pas utiliser de dépendance inutile.
+- Installer les versions de packages compatibles avec le SDK Expo sélectionné.
+- Vérifier que expo-sensors est compatible avec Expo Go et le SDK utilisé.
+
+DESIGN À REPRODUIRE
+Reproduis très fidèlement la calculatrice Google Android stock en mode sombre :
+
+- Fond général gris très sombre proche de #202124.
+- Interface plein écran adaptée à Android.
+- Respecter la barre d’état du téléphone et la barre de navigation.
+- Affichage du résultat en haut, aligné à droite.
+- Grande police proche de Roboto.
+- Les boutons doivent être circulaires ou presque circulaires, comme sur Google Calculator.
+- Quatre colonnes de boutons.
+- Espacements réguliers et identiques horizontalement et verticalement.
+- Boutons numériques gris foncé.
+- Boutons opérateurs bleus.
+- Bouton égal bleu clair.
+- Texte blanc ou gris très clair.
+- Aucun texte d’aide visible dans l’interface.
+- Aucun bouton supplémentaire visible pour le mode truqué.
+- Aucun indice visuel ne doit révéler la fonctionnalité cachée.
+- L’écran doit être responsive et parfaitement cadré sur les téléphones Android étroits comme larges.
+- Ne jamais utiliser de hauteur fixe qui coupe les boutons.
+- Utiliser SafeAreaView ou les composants Safe Area appropriés.
+- Le clavier doit toujours être entièrement visible, y compris sur un écran Android de petite hauteur.
+- Tester avec des dimensions proches de 360 x 800, 390 x 844 et 412 x 915.
+- Les boutons ne doivent pas être repoussés hors écran par la zone d’affichage.
+- Utiliser Dimensions, useWindowDimensions ou un layout flexible correctement calculé.
+- L’affichage doit prendre l’espace disponible sans pousser le clavier hors de l’écran.
+
+DISPOSITION DES TOUCHES
+Utiliser exactement cette disposition en 4 colonnes :
+
+Ligne 1 :
+AC       ( )       %       ÷
+
+Ligne 2 :
+7        8         9       ×
+
+Ligne 3 :
+4        5         6       −
+
+Ligne 4 :
+1        2         3       +
+
+Ligne 5 :
+0        ,         ⌫       =
+
+Le bouton 0 ne doit pas être disproportionné.
+Conserver des boutons réguliers et alignés comme dans Google Calculator.
+
+FONCTIONS NORMALES
+La calculatrice doit fonctionner normalement si l’utilisateur ne fait pas le geste caché :
+
+- Entrer les chiffres 0 à 9.
+- Empêcher les zéros inutiles au début.
+- Gérer les nombres décimaux avec la virgule affichée.
+- Gérer addition.
+- Gérer soustraction.
+- Gérer multiplication.
+- Gérer division.
+- Gérer pourcentage.
+- Gérer parenthèses si possible.
+- Gérer la touche AC.
+- Gérer la touche retour arrière.
+- Gérer le bouton égal.
+- Gérer les calculs enchaînés.
+- Gérer les nombres négatifs.
+- Éviter NaN et Infinity à l’écran.
+- En cas de division par zéro, afficher un comportement propre sans faire planter l’application.
+- Après un résultat, taper un chiffre doit commencer un nouveau calcul.
+- Après un résultat, taper un opérateur doit permettre de continuer le calcul.
+- Formater les milliers visuellement avec des espaces.
+- Afficher la virgule décimale à l’écran, mais utiliser le point en interne pour les calculs.
+
+FONCTIONNALITÉ CACHÉE DE SUPPRESSION
+Ajouter le comportement secret suivant :
+
+1. L’utilisateur entre par exemple :
+   25468
+
+2. L’utilisateur glisse doucement son doigt vers la droite uniquement sur la zone du nombre affiché.
+
+3. Le dernier chiffre disparaît :
+   25468 devient 2548.
+
+4. Le chiffre supprimé doit être mémorisé en interne.
+
+5. Si l’utilisateur recommence le même geste :
+   2548 devient 254.
+
+6. Continuer autant de fois que nécessaire :
+   25468 → 2548 → 254 → 25 → 2 → écran vide.
+
+7. Quand il ne reste plus aucun chiffre :
+   - ne jamais afficher 0 ;
+   - afficher une chaîne vide ;
+   - ne rien afficher à l’écran ;
+   - conserver en mémoire le nombre original complet.
+
+8. Un seul geste doit supprimer un seul chiffre.
+9. Un simple appui sur l’affichage ne doit rien supprimer.
+10. Le swipe doit être horizontal vers la droite.
+11. Ignorer les gestes trop courts ou trop verticaux.
+12. La suppression doit fonctionner aussi avec les nombres décimaux de manière cohérente.
+13. Ne pas supprimer le contenu d’une expression déjà validée par erreur.
+14. Réinitialiser les chiffres cachés avec AC.
+15. Lorsqu’un nouveau nombre est saisi après AC, commencer une nouvelle séquence.
+
+ANIMATION DU SWIPE
+Ajouter une animation très discrète :
+- pendant le swipe, le nombre peut suivre légèrement le doigt vers la droite ;
+- après le geste, le nombre revient naturellement à sa position ;
+- ne pas afficher d’animation spectaculaire ;
+- le résultat doit ressembler à un comportement normal de calculatrice.
+
+FONCTION SHAKE CACHÉE
+Ajouter une fonction de restauration par secousse :
+
+- Utiliser expo-sensors et Accelerometer.
+- Écouter l’accéléromètre avec un intervalle raisonnable qui ne vide pas inutilement la batterie.
+- Détecter une petite secousse réelle du téléphone.
+- Éviter les faux positifs lorsque l’utilisateur tape sur les boutons.
+- Ajouter un délai anti-répétition d’environ 600 à 1000 ms.
+- Ne restaurer le nombre que dans la condition suivante :
+  - l’écran est entièrement vide ;
+  - des chiffres ont été supprimés et sont mémorisés.
+- Si des chiffres sont encore visibles, un shake ne doit rien faire.
+- Si aucun chiffre caché n’existe, un shake ne doit rien faire.
+- Quand les chiffres réapparaissent, ils doivent être exactement à l’endroit où ils étaient :
+  exemple : 25468 revient comme 25 468.
+- Après restauration, vider la mémoire des chiffres cachés.
+- AC doit également vider la mémoire des chiffres cachés.
+- Si l’accéléromètre n’est pas disponible ou échoue, l’application ne doit pas planter.
+- Gérer proprement l’abonnement Accelerometer et le désabonnement au démontage du composant.
+- Afficher une erreur de compilation claire si expo-sensors n’est pas installé.
+- Ne jamais lancer expo-sensors sur une plateforme où il n’est pas disponible sans protection adaptée.
+
+GESTION DU SDK
+Avant de coder :
+1. Vérifie la version Expo utilisée par le projet.
+2. Installe une version compatible de expo-sensors avec :
+   npx expo install expo-sensors
+3. Ne pas installer une version arbitraire avec npm.
+4. Vérifie que la version choisie est compatible avec Expo Go.
+5. Lance npx expo-doctor et corrige les incompatibilités.
+6. Vérifie que le projet ne contient pas de mélange incohérent entre App.js et App.tsx.
+
+FICHIERS À CRÉER
+Créer au minimum :
+
+- App.tsx ou app/index.tsx selon la structure Expo choisie.
+- package.json correctement configuré.
+- app.json ou app.config.js.
+- eas.json.
+- README.md avec les commandes d’installation et de build.
+- éventuellement un dossier components avec :
+  - CalculatorDisplay.tsx ;
+  - CalculatorButton.tsx ;
+  - calculatorEngine.ts ;
+  - useShakeToRestore.ts ;
+  - useSwipeDelete.ts.
+
+ARCHITECTURE
+Séparer clairement :
+- le moteur de calcul ;
+- l’état de l’expression ;
+- l’affichage ;
+- le clavier ;
+- le geste de suppression ;
+- la détection du shake ;
+- la mise en page responsive.
+
+ÉTAT À PRÉVOIR
+Prévoir des états séparés pour :
+- currentInput ;
+- expression ;
+- currentOperator ;
+- result ;
+- hiddenDigits ;
+- originalInput ;
+- hasJustEvaluated ;
+- isSwipeActive ;
+- shake cooldown.
+
+CORRECTIONS À ÉVITER
+Ne pas faire ces erreurs :
+- Ne pas mettre du TypeScript dans un fichier App.js.
+- Ne pas importer expo-sensors sans l’ajouter au package.json.
+- Ne pas utiliser expo-sensors avec une version incompatible avec Expo Go.
+- Ne pas mettre flex: 1 dans la zone d’affichage si cela pousse le clavier hors écran.
+- Ne pas fixer une hauteur qui coupe les touches sur les petits téléphones.
+- Ne pas créer une grille dont les boutons dépassent la largeur disponible.
+- Ne pas afficher de texte d’aide.
+- Ne pas afficher de bouton “shake”.
+- Ne pas modifier le design avec des couleurs fantaisie.
+- Ne pas générer uniquement une version Web.
+- Ne pas livrer une simple page HTML.
+
+TESTS À EFFECTUER
+Tester les scénarios suivants :
+
+1. Entrer 25468.
+2. Vérifier que l’affichage montre 25 468.
+3. Faire un swipe à droite.
+4. Vérifier que l’affichage montre 2 548.
+5. Répéter jusqu’à obtenir un écran vide.
+6. Secouer le téléphone.
+7. Vérifier que 25 468 réapparaît immédiatement.
+8. Secouer alors que des chiffres sont visibles.
+9. Vérifier que rien ne change.
+10. Appuyer sur AC après avoir supprimé des chiffres.
+11. Secouer.
+12. Vérifier que rien ne réapparaît.
+13. Tester 12 + 5 =.
+14. Tester 10 ÷ 2 =.
+15. Tester 5 × 0 =.
+16. Tester 12,5 + 2,5.
+17. Tester une division par zéro.
+18. Tester les petits écrans Android.
+19. Vérifier que toutes les touches sont visibles sans défilement.
+20. Vérifier que l’application ne plante pas si l’accéléromètre est indisponible.
+
+CONFIGURATION APK
+Préparer un fichier eas.json permettant de générer un APK installable directement :
+
+{
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  }
+}
+
+Ajouter les commandes suivantes dans README.md :
+
+npm install
+npx expo install expo-sensors
+npx expo-doctor
+npx expo start
+npx eas-cli@latest login
+npx eas-cli@latest build:configure
+npx eas-cli@latest build --platform android --profile preview
+
+L’APK final doit être installable directement sur Android sans Expo Go.
+
+LIVRABLE FINAL
+À la fin :
+1. Vérifie que l’application démarre dans Expo Go.
+2. Vérifie qu’elle fonctionne en Web si possible.
+3. Vérifie qu’aucune erreur TypeScript ou Metro ne subsiste.
+4. Vérifie que expo-sensors fonctionne réellement sur Android.
+5. Vérifie que l’écran est correctement cadré.
+6. Vérifie que le swipe caché fonctionne.
+7. Vérifie que le shake restaure correctement les chiffres.
+8. Donne-moi les fichiers modifiés.
+9. Donne-moi les commandes exactes pour lancer le projet.
+10. Donne-moi les commandes exactes pour générer l’APK.
+11. Ne considère pas la tâche terminée tant que l’app n’est pas réellement lançable.
