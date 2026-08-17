@@ -27,7 +27,7 @@ const BUTTONS = [
 const ROUTINE_STEPS = [
   'Le magicien effectue un calcul ou tape un nombre (par exemple le résultat d’un choix du public ou une prédiction).',
   'Au moment de retirer le tout premier chiffre, le magicien demande au spectateur de tendre la main et de fermer fermement le poing.',
-  'En effectuant un glissement discret (swipe) vers la droite directement sur l’écran d’affichage, le dernier chiffre disparaît de la calculatrice.',
+  'En effectuant un glissement (swipe) vers la droite directement sur l’écran d’affichage, le dernier chiffre disparaît de la calculatrice.',
   'Le magicien fait semblant de tenir ce chiffre invisible entre le pouce et l’index, puis mime le geste de le lancer dans la main fermée du spectateur.',
   'L’opération est répétée pour chaque chiffre : à chaque swipe vers la droite, un chiffre disparaît et est symboliquement projeté dans le poing du spectateur.',
   'Lorsque le dernier chiffre s’efface, l’écran devient totalement vide (aucun zéro ne subsiste).',
