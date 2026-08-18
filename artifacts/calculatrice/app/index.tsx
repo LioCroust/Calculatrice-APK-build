@@ -25,6 +25,7 @@ const BUTTONS = [
 ];
 
 const ROUTINE_STEPS = [
+  'Avant de commencer, le magicien appuie deux fois rapidement sur AC. Le nombre d’accueil s’efface, le tour est activé, puis le fonctionnement secret se reverrouille après la restauration finale.',
   'Le magicien effectue un calcul ou tape un nombre (par exemple le résultat d’un choix du public ou une prédiction).',
   'Au moment de retirer le tout premier chiffre, le magicien demande au spectateur de tendre la main et de fermer fermement le poing.',
   'En effectuant un glissement (swipe) vers la droite directement sur l’écran d’affichage, le dernier chiffre disparaît de la calculatrice.',
@@ -36,12 +37,20 @@ const ROUTINE_STEPS = [
 ];
 
 export default function CalculatorScreen() {
-  const { expression, resultPreview, isEvaluated, handlePress, swipeDelete } = useCalculator();
+  const {
+    expression,
+    resultPreview,
+    isEvaluated,
+    handlePress,
+    swipeDelete,
+    unlockMagic,
+  } = useCalculator();
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const [swipeOffset, setSwipeOffset] = useState<number>(0);
   const [showRoutine, setShowRoutine] = useState<boolean>(false);
+  const lastAcTapAt = useRef<number | null>(null);
 
   useEffect(() => {
     if (expression === '1234' && !isEvaluated) {
@@ -90,6 +99,17 @@ export default function CalculatorScreen() {
   const onButtonPress = (btn: string) => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    if (btn === 'AC') {
+      const now = Date.now();
+      if (lastAcTapAt.current !== null && now - lastAcTapAt.current <= 500) {
+        unlockMagic();
+        lastAcTapAt.current = null;
+      } else {
+        lastAcTapAt.current = now;
+      }
+    } else {
+      lastAcTapAt.current = null;
     }
     handlePress(btn);
   };

@@ -7,16 +7,19 @@ const SIMPLE_NUMBER = /^-?\d*(,\d*)?$/;
 const SHAKE_RESTORE_DELAY_MS = 1000;
 
 export function useCalculator() {
-  const [expression, setExpression] = useState<string>('');
+  const [expression, setExpression] = useState<string>(() => createStartupNumber());
   const [resultPreview, setResultPreview] = useState<string>('');
-  const [isEvaluated, setIsEvaluated] = useState<boolean>(false);
+  const [isEvaluated, setIsEvaluated] = useState<boolean>(true);
+  const [magicEnabled, setMagicEnabled] = useState<boolean>(false);
   const hiddenDigits = useRef<string>('');
   const lastShakeAt = useRef<number>(0);
   const emptySince = useRef<number | null>(null);
   const expressionRef = useRef<string>('');
+  const magicEnabledRef = useRef<boolean>(false);
   const previousAcceleration = useRef<{ x: number; y: number; z: number } | null>(null);
 
   expressionRef.current = expression;
+  magicEnabledRef.current = magicEnabled;
 
   useEffect(() => {
     if (!expression || isEvaluated) {
@@ -54,12 +57,18 @@ export function useCalculator() {
         const canRestoreAfterDelay =
           emptySince.current !== null &&
           now - emptySince.current >= SHAKE_RESTORE_DELAY_MS;
-        if (isShake && canRestoreAfterDelay && now - lastShakeAt.current > 600) {
+        if (
+          magicEnabledRef.current &&
+          isShake &&
+          canRestoreAfterDelay &&
+          now - lastShakeAt.current > 600
+        ) {
           lastShakeAt.current = now;
           if (expressionRef.current === '' && hiddenDigits.current !== '') {
             setExpression(hiddenDigits.current);
             hiddenDigits.current = '';
             emptySince.current = null;
+            setMagicEnabled(false);
             setIsEvaluated(false);
           }
         }
@@ -143,7 +152,11 @@ export function useCalculator() {
 
   const swipeDelete = () => {
     const currentExpression = expressionRef.current;
-    if (!currentExpression || !SIMPLE_NUMBER.test(currentExpression)) {
+    if (
+      !magicEnabledRef.current ||
+      !currentExpression ||
+      !SIMPLE_NUMBER.test(currentExpression)
+    ) {
       return;
     }
     if (!hiddenDigits.current) hiddenDigits.current = currentExpression;
@@ -155,7 +168,18 @@ export function useCalculator() {
     setIsEvaluated(false);
   };
 
-  return { expression, resultPreview, isEvaluated, handlePress, swipeDelete };
+  const unlockMagic = () => {
+    setMagicEnabled(true);
+  };
+
+  return {
+    expression,
+    resultPreview,
+    isEvaluated,
+    handlePress,
+    swipeDelete,
+    unlockMagic,
+  };
 }
 
 export function formatExpression(expression: string) {
@@ -189,4 +213,10 @@ function evaluateMath(expression: string): number | null {
   } catch {
     return null;
   }
+}
+
+function createStartupNumber() {
+  const integerPart = Math.floor(1000 + Math.random() * 90000);
+  const decimalPart = Math.floor(10 + Math.random() * 90);
+  return `${integerPart},${decimalPart}`;
 }
