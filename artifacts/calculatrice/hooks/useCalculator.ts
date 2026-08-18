@@ -176,6 +176,7 @@ export function useCalculator() {
     expression,
     resultPreview,
     isEvaluated,
+    magicEnabled,
     handlePress,
     swipeDelete,
     unlockMagic,

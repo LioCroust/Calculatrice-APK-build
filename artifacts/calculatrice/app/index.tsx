@@ -41,6 +41,7 @@ export default function CalculatorScreen() {
     expression,
     resultPreview,
     isEvaluated,
+    magicEnabled,
     handlePress,
     swipeDelete,
     unlockMagic,
@@ -51,6 +52,9 @@ export default function CalculatorScreen() {
   const [swipeOffset, setSwipeOffset] = useState<number>(0);
   const [showRoutine, setShowRoutine] = useState<boolean>(false);
   const lastAcTapAt = useRef<number | null>(null);
+  const magicEnabledRef = useRef<boolean>(false);
+
+  magicEnabledRef.current = magicEnabled;
 
   useEffect(() => {
     if (expression === '1234' && !isEvaluated) {
@@ -64,9 +68,10 @@ export default function CalculatorScreen() {
 
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: () => magicEnabledRef.current,
       onMoveShouldSetPanResponder: (_, gestureState) => {
         return (
+          magicEnabledRef.current &&
           Math.abs(gestureState.dx) > 12 &&
           Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 1.2
         );
