@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "mawL-L1FTk1s0E_mG4HDc"
+uri = "file://artifacts/calculatrice/builds/calculatrice-preview.apk"
+type = "unspecified"
+title = "APK Preview Android — Calculatrice"
+description = "APK Release signé pour com.calculatrice.magique, arm64-v8a, avec la permission Google Play Billing. SHA-256 : 25deb64b628c4ca488b727222f7f4c815aa6c64f8911758e4c9878da49e2b05c"
+logical_id = "cf254d16-9b3e-4436-9fe9-1cec39833775"
+content_hash = "sha256:25deb64b628c4ca488b727222f7f4c815aa6c64f8911758e4c9878da49e2b05c"
+size = 55968261
+mtime_ms = 1788813031224
+storage_uri = "gcs://replit-rams-assets-riker/rams/assets/repl:6c0620bd-7fa9-4baa-95a3-b8837b668dec/cf254d16-9b3e-4436-9fe9-1cec39833775/db052831-1b0b-454d-8d75-e6952c6c2282"
+storage_version_token = "1788813092716142"
+content_type = "application/octet-stream"

@@ -1,3 +1,4 @@
 - [RevenueCat Android lifetime](revenuecat-android-lifetime.md) — un produit one_time créé par API doit être rendu non consommable dans le tableau de bord.
 - [Expo Go SDK alignment](expo-sdk-go-alignment.md) — Calculatrice doit rester compatible avec Expo Go SDK 57 utilisé sur le téléphone.
 - [Google Play promo codes](google-play-promo-codes.md) — les codes gratuits passent par Google Play ; une remise de 50 % est une offre Play, pas un champ local.
+- [Android APK build environment](android-apk-build-environment.md) — les builds natifs Android doivent utiliser Java 17 et des caches sur le volume workspace, avec arm64 pour éviter quota et délais.
