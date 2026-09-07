@@ -26,7 +26,7 @@ export function PremiumBanner({ onPress }: { onPress: () => void }) {
           VERSION GRATUITE
         </Text>
         <Text style={[styles.message, { color: colors.foreground }]}>
-          Passez à Premium pour retirer ce bandeau
+          Calculatrice magique — passez à Premium pour retirer ce bandeau
         </Text>
       </View>
       <Text style={[styles.chevron, { color: colors.primary }]}>›</Text>
