@@ -1,1 +1,2 @@
 - [RevenueCat Android lifetime](revenuecat-android-lifetime.md) — un produit one_time créé par API doit être rendu non consommable dans le tableau de bord.
+- [Expo Go SDK alignment](expo-sdk-go-alignment.md) — Calculatrice doit rester compatible avec Expo Go SDK 57 utilisé sur le téléphone.

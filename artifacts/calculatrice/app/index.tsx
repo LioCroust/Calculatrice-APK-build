@@ -233,7 +233,7 @@ export default function CalculatorScreen() {
         <View style={styles.modalRoot}>
           <View
             pointerEvents="none"
-            style={[StyleSheet.absoluteFillObject, { backgroundColor: colors.background, opacity: 0.9 }]}
+            style={[StyleSheet.absoluteFill, { backgroundColor: colors.background, opacity: 0.9 }]}
           />
           <View
             style={[
