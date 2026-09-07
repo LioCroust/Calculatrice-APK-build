@@ -5,6 +5,7 @@ import React, {
   useRef,
 } from 'react';
 import { AppState, Platform } from 'react-native';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Purchases, {
   LOG_LEVEL,
@@ -24,6 +25,11 @@ let revenueCatConfigured = false;
 export function initializeRevenueCat() {
   if (revenueCatConfigured) return true;
   if (Platform.OS === 'web') return false;
+  if (
+    Constants.executionEnvironment === ExecutionEnvironment.StoreClient
+  ) {
+    return false;
+  }
   if (!REVENUECAT_ANDROID_API_KEY) {
     console.warn('RevenueCat is unavailable: Android public API key is missing.');
     return false;
@@ -35,7 +41,7 @@ export function initializeRevenueCat() {
     revenueCatConfigured = true;
     return true;
   } catch (error) {
-    console.error('RevenueCat initialization failed.', error);
+    console.warn('RevenueCat initialization failed.', error);
     return false;
   }
 }
