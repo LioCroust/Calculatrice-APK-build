@@ -15,8 +15,35 @@ Ouvrez ensuite le projet avec Expo Go sur un appareil Android.
 
 ```bash
 pnpm --filter @workspace/calculatrice run typecheck
-pnpm --filter @workspace/calculatrice exec expo-doctor
+cd artifacts/calculatrice && pnpm dlx expo-doctor
 ```
+
+## Premium avec RevenueCat
+
+L'application utilise RevenueCat pour un achat Android unique à vie :
+
+- produit Google Play : `calculatrice_premium` ;
+- droit RevenueCat : `premium` ;
+- offre courante : `default` ;
+- forfait : `$rc_lifetime`.
+
+Le prix n'est pas écrit dans le code. Le paywall affiche le tarif localisé
+retourné par Google Play via RevenueCat.
+
+Avant de tester ou publier un achat réel :
+
+1. créez dans Google Play Console le produit ponctuel
+   `calculatrice_premium` au prix de base de 3,99 EUR ;
+2. publiez-le au minimum sur une piste de test interne ;
+3. ajoutez le compte de service Google Play dans RevenueCat ;
+4. dans le catalogue RevenueCat, ouvrez le produit et désactivez
+   **Consumable** pour en faire un achat non consommable ;
+5. vérifiez que le produit est toujours relié au droit `premium` et au
+   forfait `$rc_lifetime` de l'offre `default`.
+
+Le statut non consommable est indispensable : sans lui, Google Play pourrait
+autoriser un nouvel achat et une restauration après réinstallation ne serait
+pas fiable.
 
 ## Distribution Android
 

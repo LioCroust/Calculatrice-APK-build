@@ -1,0 +1,1 @@
+- [RevenueCat Android lifetime](revenuecat-android-lifetime.md) — un produit one_time créé par API doit être rendu non consommable dans le tableau de bord.

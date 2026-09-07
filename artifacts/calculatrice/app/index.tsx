@@ -15,6 +15,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useCalculator, formatExpression } from '../hooks/useCalculator';
 import { useColors } from '../hooks/useColors';
+import { PremiumBanner } from '@/components/PremiumBanner';
+import { PremiumPaywall } from '@/components/PremiumPaywall';
+import { useSubscription } from '@/lib/revenuecat';
 
 const BUTTONS = [
   ['AC', '( )', '%', '÷'],
@@ -47,10 +50,12 @@ export default function CalculatorScreen() {
     unlockMagic,
   } = useCalculator();
   const colors = useColors();
+  const { isPremium, isLoading: isPremiumLoading } = useSubscription();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const [swipeOffset, setSwipeOffset] = useState<number>(0);
   const [showRoutine, setShowRoutine] = useState<boolean>(false);
+  const [showPaywall, setShowPaywall] = useState<boolean>(false);
   const lastAcTapAt = useRef<number | null>(null);
   const magicEnabledRef = useRef<boolean>(false);
 
@@ -153,6 +158,10 @@ export default function CalculatorScreen() {
         </Text>
       </View>
 
+      {magicEnabled && !isPremium && !isPremiumLoading ? (
+        <PremiumBanner onPress={() => setShowPaywall(true)} />
+      ) : null}
+
       <View style={styles.keypad}>
         {BUTTONS.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
@@ -208,6 +217,11 @@ export default function CalculatorScreen() {
           </View>
         ))}
       </View>
+
+      <PremiumPaywall
+        visible={showPaywall}
+        onClose={() => setShowPaywall(false)}
+      />
 
       <Modal
         visible={showRoutine}

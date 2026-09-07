@@ -21,3 +21,10 @@ timeoutMs = 20000
 
 [nix]
 channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY = "goog_LZrVHKYEDQOpnDuYUiUGWgzAGbj"
+REVENUECAT_GOOGLE_PLAY_STORE_APP_ID = "app0c0deba161"
+REVENUECAT_PROJECT_ID = "projda343c74"
