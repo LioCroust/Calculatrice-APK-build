@@ -30,6 +30,11 @@ L'application utilise RevenueCat pour un achat Android unique à vie :
 Le prix n'est pas écrit dans le code. Le paywall affiche le tarif localisé
 retourné par Google Play via RevenueCat.
 
+Pendant un lancement dans Expo Go, RevenueCat est volontairement désactivé :
+Expo Go ne peut pas utiliser la clé Google Play réelle pour la facturation.
+Le bandeau et le paywall peuvent être prévisualisés, mais l'achat réel doit
+être testé dans l'APK ou l'AAB autonome de l'application.
+
 Avant de tester ou publier un achat réel :
 
 1. créez dans Google Play Console le produit ponctuel

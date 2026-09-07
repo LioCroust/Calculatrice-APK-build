@@ -26,8 +26,10 @@ export function initializeRevenueCat() {
   if (revenueCatConfigured) return true;
   if (Platform.OS === 'web') return false;
   if (
+    Constants.appOwnership === 'expo' ||
     Constants.executionEnvironment === ExecutionEnvironment.StoreClient
   ) {
+    console.info('RevenueCat is disabled while running in Expo Go.');
     return false;
   }
   if (!REVENUECAT_ANDROID_API_KEY) {

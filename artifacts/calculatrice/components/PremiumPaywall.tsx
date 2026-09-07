@@ -301,10 +301,13 @@ export function PremiumPaywall({
 
             <Pressable
               onPress={restorePurchase}
-              disabled={busy}
+              disabled={!isConfigured || busy}
               style={({ pressed }) => [
                 styles.restoreButton,
-                { opacity: busy ? 0.45 : pressed ? 0.7 : 1 },
+                {
+                  opacity:
+                    !isConfigured || busy ? 0.45 : pressed ? 0.7 : 1,
+                },
               ]}
               accessibilityRole="button"
               testID="premium-restore"
