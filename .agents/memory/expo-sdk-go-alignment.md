@@ -11,4 +11,6 @@ Go SDK 54, car cela remplacerait la version utilisée par les autres projets.
 qu'il embarque.
 
 **How to apply:** Toute future mise à jour Expo de Calculatrice doit préserver
-la compatibilité SDK 57 ou passer directement à une application autonome.
+la compatibilité SDK 57 ou passer directement à une application autonome. Avec
+SDK 57, `expo-navigation-bar` règle surtout le style au runtime ; les couleurs
+des barres et le fond natif doivent aussi être configurés au niveau Expo.

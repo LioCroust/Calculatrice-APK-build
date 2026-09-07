@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -6,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { StatusBar } from 'expo-status-bar';
 import * as NavigationBar from 'expo-navigation-bar';
+import * as SystemUI from 'expo-system-ui';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -26,6 +28,7 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 const revenueCatEnabled = initializeRevenueCat();
+void SystemUI.setBackgroundColorAsync(colors.light.background);
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -42,9 +45,9 @@ export default function RootLayout() {
   }, [fontsLoaded, fontError]);
 
   useEffect(() => {
-    void NavigationBar.setBackgroundColorAsync(colors.light.background);
-    void NavigationBar.setButtonStyleAsync('light');
-    void NavigationBar.setContrastEnforcedAsync(false);
+    if (Platform.OS === 'android') {
+      NavigationBar.setStyle('dark');
+    }
   }, []);
 
   if (!fontsLoaded && !fontError) return null;
@@ -56,11 +59,7 @@ export default function RootLayout() {
           <SubscriptionProvider enabled={revenueCatEnabled}>
             <GestureHandlerRootView style={{ flex: 1 }}>
               <KeyboardProvider>
-                <StatusBar
-                  style="light"
-                  backgroundColor={colors.light.background}
-                  translucent={false}
-                />
+                <StatusBar style="light" />
                 <Stack screenOptions={{ headerShown: false }}>
                   <Stack.Screen name="index" />
                 </Stack>
