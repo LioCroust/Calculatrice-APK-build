@@ -7,7 +7,7 @@ const SIMPLE_NUMBER = /^-?\d*(,\d*)?$/;
 const SHAKE_RESTORE_DELAY_MS = 1000;
 
 export function useCalculator() {
-  const [expression, setExpression] = useState<string>(() => createStartupNumber());
+  const [expression, setExpression] = useState<string>('');
   const [resultPreview, setResultPreview] = useState<string>('');
   const [isEvaluated, setIsEvaluated] = useState<boolean>(true);
   const [magicEnabled, setMagicEnabled] = useState<boolean>(false);
@@ -214,10 +214,4 @@ function evaluateMath(expression: string): number | null {
   } catch {
     return null;
   }
-}
-
-function createStartupNumber() {
-  const integerPart = Math.floor(1000 + Math.random() * 90000);
-  const decimalPart = Math.floor(10 + Math.random() * 90);
-  return `${integerPart},${decimalPart}`;
 }
