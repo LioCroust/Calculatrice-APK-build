@@ -8,6 +8,16 @@
     "scheme": "calculatrice",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#202124",
+      "translucent": false
+    },
+    "androidNavigationBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#202124",
+      "enforceContrast": false
+    },
     "splash": {
       "image": "./assets/images/calculator-icon.png",
       "resizeMode": "contain",

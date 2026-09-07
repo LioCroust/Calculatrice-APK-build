@@ -5,6 +5,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { StatusBar } from 'expo-status-bar';
+import * as NavigationBar from 'expo-navigation-bar';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -18,6 +19,7 @@ import {
   initializeRevenueCat,
   SubscriptionProvider,
 } from '@/lib/revenuecat';
+import colors from '@/constants/colors';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -39,6 +41,12 @@ export default function RootLayout() {
     }
   }, [fontsLoaded, fontError]);
 
+  useEffect(() => {
+    void NavigationBar.setBackgroundColorAsync(colors.light.background);
+    void NavigationBar.setButtonStyleAsync('light');
+    void NavigationBar.setContrastEnforcedAsync(false);
+  }, []);
+
   if (!fontsLoaded && !fontError) return null;
 
   return (
@@ -48,7 +56,11 @@ export default function RootLayout() {
           <SubscriptionProvider enabled={revenueCatEnabled}>
             <GestureHandlerRootView style={{ flex: 1 }}>
               <KeyboardProvider>
-                <StatusBar style="light" />
+                <StatusBar
+                  style="light"
+                  backgroundColor={colors.light.background}
+                  translucent={false}
+                />
                 <Stack screenOptions={{ headerShown: false }}>
                   <Stack.Screen name="index" />
                 </Stack>

@@ -57,6 +57,7 @@
     "zod-validation-error": "^3.4.0"
   },
   "dependencies": {
+    "expo-navigation-bar": "~57.0.2",
     "expo-sensors": "^57.0.2",
     "react-native-purchases": "^10.9.0"
   }
