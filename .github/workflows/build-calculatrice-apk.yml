@@ -64,7 +64,7 @@ jobs:
           NINJA_NUM_JOBS: 2
         run: |
           chmod +x ./gradlew
-          ./gradlew :app:assembleRelease \
+          ./gradlew :app:bundleRelease \
             --no-daemon \
             --max-workers=2 \
             --console=plain \
