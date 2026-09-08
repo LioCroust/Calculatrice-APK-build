@@ -27,9 +27,11 @@
       "supportsTablet": false
     },
     "android": {
-        "permissions": [
+  "package": "com.calculatrice.magique",
+  "permissions": [
     "com.android.vending.BILLING"
   ]
+},
     },
     "web": {
       "favicon": "./assets/images/calculator-icon.png"
