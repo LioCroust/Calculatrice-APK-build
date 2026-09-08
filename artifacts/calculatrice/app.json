@@ -31,7 +31,6 @@
   "permissions": [
     "com.android.vending.BILLING"
   ]
-},
     },
     "web": {
       "favicon": "./assets/images/calculator-icon.png"
