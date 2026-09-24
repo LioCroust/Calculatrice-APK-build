@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
-
-const OPERATORS = ['+', '-', '×', '÷'];
+import { appendCalculatorInput, evaluateMath } from '../lib/calculatorMath';
 const SIMPLE_NUMBER = /^-?\d*(,\d*)?$/;
 const SHAKE_RESTORE_DELAY_MS = 1000;
 
@@ -27,7 +26,7 @@ export function useCalculator() {
       return;
     }
 
-    const result = evaluateMath(expression);
+    const result = evaluateMath(expression, true);
     setResultPreview(
       result !== null && result.toString().replace('.', ',') !== expression
         ? formatExpression(result.toString().replace('.', ','))
@@ -105,49 +104,11 @@ export function useCalculator() {
       setIsEvaluated(true);
       return;
     }
-    if (button === '( )') {
-      const opens = (expression.match(/\(/g) ?? []).length;
-      const closes = (expression.match(/\)/g) ?? []).length;
-      const last = expression.slice(-1);
-      if (opens > closes && last !== '(' && !OPERATORS.includes(last)) {
-        setExpression((value) => value + ')');
-      } else if (expression && ![...OPERATORS, '('].includes(last)) {
-        setExpression((value) => value + '×(');
-      } else {
-        setExpression((value) => (isEvaluated ? '(' : value + '('));
-      }
+    const nextExpression = appendCalculatorInput(expression, button, isEvaluated);
+    if (nextExpression !== null) {
+      setExpression(nextExpression);
       setIsEvaluated(false);
-      return;
     }
-
-    if (isEvaluated) {
-      if ([...OPERATORS, '%'].includes(button)) {
-        setExpression((value) => value + button);
-      } else {
-        setExpression(button === ',' ? '0,' : button);
-      }
-      setIsEvaluated(false);
-      return;
-    }
-
-    setExpression((value) => {
-      if (button === ',') {
-        const segment = value.split(/[+×÷()]/).pop() ?? '';
-        if (segment.includes(',')) return value;
-        return segment === '' || segment === '-' ? `${value}0,` : `${value},`;
-      }
-      if (OPERATORS.includes(button)) {
-        const last = value.slice(-1);
-        if (OPERATORS.includes(last)) return value.slice(0, -1) + button;
-        if (!value && button !== '-') return value;
-        return value + button;
-      }
-      if (/^\d$/.test(button)) {
-        const segment = value.split(/[+×÷()]/).pop() ?? '';
-        if (segment === '0' || segment === '-0') return value.slice(0, -1) + button;
-      }
-      return value + button;
-    });
   };
 
   const swipeDelete = () => {
@@ -191,27 +152,4 @@ export function formatExpression(expression: string) {
     const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     return `${negative}${grouped}${decimals === undefined ? '' : `,${decimals}`}`;
   });
-}
-
-function evaluateMath(expression: string): number | null {
-  let sanitized = expression
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .replace(/,/g, '.')
-    .replace(/%/g, '/100')
-    .replace(/[+*/]$/, '');
-  if (!sanitized || sanitized === '-') return null;
-
-  const open = (sanitized.match(/\(/g) ?? []).length;
-  const close = (sanitized.match(/\)/g) ?? []).length;
-  sanitized += ')'.repeat(Math.max(0, open - close));
-
-  if (!/^[\d.+\-*/() ]+$/.test(sanitized)) return null;
-  try {
-    const result: unknown = new Function(`return (${sanitized})`)();
-    if (typeof result !== 'number' || !Number.isFinite(result)) return null;
-    return Math.round(result * 1_000_000_000) / 1_000_000_000;
-  } catch {
-    return null;
-  }
 }
