@@ -61,6 +61,9 @@
   "dependencies": {
     "expo-navigation-bar": "~57.0.2",
     "expo-sensors": "^57.0.2",
-    "react-native-purchases": "^10.9.0"
+    "react-native-purchases": "^10.9.0",
+    "expo": "~57.0.20",
+    "react": "19.2.3",
+    "react-native": "0.86.3"
   }
 }
