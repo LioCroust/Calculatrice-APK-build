@@ -27,7 +27,7 @@
       "supportsTablet": false
     },
     "android": {
-      "package": "com.calculatrice.magique",
+      "package": "com.liotheboss.calculatrice",
       "permissions": [
         "com.android.vending.BILLING"
       ]
