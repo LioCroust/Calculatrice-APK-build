@@ -71,6 +71,25 @@ function hasPremiumAccess(customerInfo: CustomerInfo | undefined) {
   );
 }
 
+function describeRevenueCatError(error: unknown) {
+  if (error instanceof Error) {
+    const details = error as Error & {
+      code?: string | number;
+      readableErrorCode?: string;
+      underlyingErrorMessage?: string;
+    };
+    return [
+      details.readableErrorCode,
+      details.code !== undefined ? `code ${details.code}` : null,
+      details.message,
+      details.underlyingErrorMessage,
+    ]
+      .filter(Boolean)
+      .join(' — ');
+  }
+  return String(error);
+}
+
 export function SubscriptionProvider({
   children,
   enabled,
@@ -174,8 +193,16 @@ export function SubscriptionProvider({
     ]);
   };
 
-  const queryError =
-    customerInfoQuery.error ?? offeringsQuery.error ?? null;
+  const queryError = [
+    customerInfoQuery.error
+      ? `Compte : ${describeRevenueCatError(customerInfoQuery.error)}`
+      : null,
+    offeringsQuery.error
+      ? `Offre : ${describeRevenueCatError(offeringsQuery.error)}`
+      : null,
+  ]
+    .filter(Boolean)
+    .join('\n');
 
   const value: SubscriptionContextValue = {
     isPremium: hasPremiumAccess(customerInfoQuery.data),
@@ -187,12 +214,7 @@ export function SubscriptionProvider({
     isRetrying:
       customerInfoQuery.isRefetching || offeringsQuery.isRefetching,
     isConfigured: enabled,
-    errorMessage:
-      queryError instanceof Error
-        ? queryError.message
-        : queryError
-          ? 'Impossible de contacter Google Play.'
-          : null,
+    errorMessage: queryError || null,
     packageToPurchase,
     priceString: packageToPurchase?.product.priceString ?? null,
     purchase: purchaseMutation.mutateAsync,
