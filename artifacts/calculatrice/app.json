@@ -28,6 +28,7 @@
     },
     "android": {
       "package": "com.liotheboss.calculatrice",
+      "versionCode": 2,
       "permissions": [
         "com.android.vending.BILLING"
       ]
