@@ -238,6 +238,15 @@ export function PremiumPaywall({
                   Impossible de charger l’offre Premium. Vérifiez votre
                   connexion puis réessayez.
                 </Text>
+                <Text
+                  selectable
+                  style={[
+                    styles.errorDetails,
+                    { color: colors.mutedForeground },
+                  ]}
+                >
+                  Détail technique : {errorMessage}
+                </Text>
                 <Pressable
                   onPress={retry}
                   disabled={isRetrying}
@@ -531,6 +540,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter_400Regular',
     fontSize: 13,
     lineHeight: 19,
+  },
+  errorDetails: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 11,
+    lineHeight: 15,
+    marginTop: 8,
   },
   retryButton: {
     minHeight: 42,
