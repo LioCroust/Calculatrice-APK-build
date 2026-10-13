@@ -2,7 +2,7 @@
   "expo": {
     "name": "Calculatrice",
     "slug": "calculatrice",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/calculator-icon.png",
     "scheme": "calculatrice",
@@ -28,7 +28,7 @@
     },
     "android": {
       "package": "com.liotheboss.calculatrice",
-      "versionCode": 5,
+      "versionCode": 6,
       "permissions": [
         "com.android.vending.BILLING"
       ]
